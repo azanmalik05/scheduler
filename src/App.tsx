@@ -4,9 +4,7 @@ const schedule = {
 
 const App = () => {
   return (
-    <div>
       <h1>{schedule.title}</h1>
-    </div>
   );
 };
 
