@@ -13,10 +13,14 @@ type CourseListProps = {
 
 function CourseList({ courses }: CourseListProps) {
   return (
-    <ul>
+    <ul className="course-list">
       {Object.values(courses).map((course) => (
-        <li key={course.term + course.number}>
-          {course.term} CS {course.number}: {course.title} ({course.meets})
+        <li className="course-card" key={course.term + course.number}>
+          <h2 className="course-header">
+            {course.term} CS {course.number}
+          </h2>
+          <p className="course-title">{course.title}</p>
+          <p className="course-meets">{course.meets}</p>
         </li>
       ))}
     </ul>

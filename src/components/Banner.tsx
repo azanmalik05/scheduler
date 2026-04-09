@@ -3,7 +3,7 @@ type BannerProps = {
 };
 
 function Banner({ title }: BannerProps) {
-  return <h1>{title}</h1>;
+  return <h1 className="banner-title">{title}</h1>;
 }
 
 export default Banner;

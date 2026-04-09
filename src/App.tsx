@@ -22,12 +22,6 @@ const schedule = {
       meets: "MWF 1:00-1:50",
       title: "Fundamentals of Computer Programming I"
     },
-    W111: {
-      term: "Winter",
-      number: "111",
-      meets: "MWF 1:00-1:50",
-      title: "Fundamentals of Computer Programming I"
-    },
     F211: {
       term: "Fall",
       number: "211",
@@ -39,10 +33,10 @@ const schedule = {
 
 function App() {
   return (
-    <>
+    <div className="app">
       <Banner title={schedule.title} />
       <CourseList courses={schedule.courses} />
-    </>
+    </div>
   );
 }
 
