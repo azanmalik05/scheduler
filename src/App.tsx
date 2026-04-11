@@ -1,37 +1,57 @@
+import { useEffect, useState } from "react";
 import Banner from "./components/Banner";
 import CourseList from "./components/CourseList";
 
-const schedule = {
-  title: "CS Courses for 2018-2019",
+type Course = {
+  term: string;
+  number: string;
+  meets: string;
+  title: string;
+};
+
+type Schedule = {
+  title: string;
   courses: {
-    F101: {
-      term: "Fall",
-      number: "101",
-      meets: "MWF 11:00-11:50",
-      title: "Computer Science: Concepts, Philosophy, and Connections"
-    },
-    F110: {
-      term: "Fall",
-      number: "110",
-      meets: "MWF 12:00-12:50",
-      title: "Intro Programming for non-majors"
-    },
-    F111: {
-      term: "Fall",
-      number: "111",
-      meets: "MWF 1:00-1:50",
-      title: "Fundamentals of Computer Programming I"
-    },
-    F211: {
-      term: "Fall",
-      number: "211",
-      meets: "MWF 2:00-2:50",
-      title: "Fundamentals of Computer Programming II"
-    }
-  }
+    [key: string]: Course;
+  };
 };
 
 function App() {
+  const [schedule, setSchedule] = useState<Schedule | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    async function loadCourses() {
+      try {
+        const response = await fetch("https://courses.cs.northwestern.edu/394/guides/data/cs-courses.php");
+        if (!response.ok) {
+          throw new Error("Failed to fetch courses");
+        }
+        const json = await response.json();
+        setSchedule(json);
+      } catch (err) {
+        setError("Could not load courses");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadCourses();
+  }, []);
+
+  if (loading) {
+    return <h1>Loading...</h1>;
+  }
+
+  if (error) {
+    return <h1>{error}</h1>;
+  }
+
+  if (!schedule) {
+    return <h1>No course data found</h1>;
+  }
+
   return (
     <div className="app">
       <Banner title={schedule.title} />
