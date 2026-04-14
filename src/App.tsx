@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Banner from "./components/Banner";
-import CourseList from "./components/CourseList";
+import TermPage from "./components/TermPage";
 
 type Course = {
   term: string;
@@ -19,43 +19,26 @@ type Schedule = {
 function App() {
   const [schedule, setSchedule] = useState<Schedule | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
 
   useEffect(() => {
     async function loadCourses() {
-      try {
-        const response = await fetch("https://courses.cs.northwestern.edu/394/guides/data/cs-courses.php");
-        if (!response.ok) {
-          throw new Error("Failed to fetch courses");
-        }
-        const json = await response.json();
-        setSchedule(json);
-      } catch (err) {
-        setError("Could not load courses");
-      } finally {
-        setLoading(false);
-      }
+      const response = await fetch("https://courses.cs.northwestern.edu/394/guides/data/cs-courses.php");
+      const json = await response.json();
+      setSchedule(json);
+      setLoading(false);
     }
 
     loadCourses();
   }, []);
 
-  if (loading) {
+  if (loading || !schedule) {
     return <h1>Loading...</h1>;
-  }
-
-  if (error) {
-    return <h1>{error}</h1>;
-  }
-
-  if (!schedule) {
-    return <h1>No course data found</h1>;
   }
 
   return (
     <div className="app">
       <Banner title={schedule.title} />
-      <CourseList courses={schedule.courses} />
+      <TermPage courses={schedule.courses} />
     </div>
   );
 }

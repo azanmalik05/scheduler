@@ -9,12 +9,17 @@ type CourseListProps = {
   courses: {
     [key: string]: Course;
   };
+  term: string;
 };
 
-function CourseList({ courses }: CourseListProps) {
+function CourseList({ courses, term }: CourseListProps) {
+  const filteredCourses = Object.values(courses).filter(
+    (course) => course.term === term
+  );
+
   return (
     <ul className="course-list">
-      {Object.values(courses).map((course) => (
+      {filteredCourses.map((course) => (
         <li className="course-card" key={course.term + course.number}>
           <h2 className="course-header">
             {course.term} CS {course.number}
