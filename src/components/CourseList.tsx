@@ -10,17 +10,32 @@ type CourseListProps = {
     [key: string]: Course;
   };
   term: string;
+  selectedCourses: string[];
+  toggleCourse: (courseId: string) => void;
 };
 
-function CourseList({ courses, term }: CourseListProps) {
-  const filteredCourses = Object.values(courses).filter(
-    (course) => course.term === term
+function CourseList({
+  courses,
+  term,
+  selectedCourses,
+  toggleCourse,
+}: CourseListProps) {
+  const filteredCourses = Object.entries(courses).filter(
+    ([, course]) => course.term === term
   );
 
   return (
     <ul className="course-list">
-      {filteredCourses.map((course) => (
-        <li className="course-card" key={course.term + course.number}>
+      {filteredCourses.map(([id, course]) => (
+        <li
+          className={
+            selectedCourses.includes(id)
+              ? "course-card selected-course"
+              : "course-card"
+          }
+          key={id}
+          onClick={() => toggleCourse(id)}
+        >
           <h2 className="course-header">
             {course.term} CS {course.number}
           </h2>

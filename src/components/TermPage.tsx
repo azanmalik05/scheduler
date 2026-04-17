@@ -17,11 +17,25 @@ type TermPageProps = {
 
 function TermPage({ courses }: TermPageProps) {
   const [term, setTerm] = useState("Fall");
+  const [selectedCourses, setSelectedCourses] = useState<string[]>([]);
+
+  function toggleCourse(courseId: string) {
+    if (selectedCourses.includes(courseId)) {
+      setSelectedCourses(selectedCourses.filter((id) => id !== courseId));
+    } else {
+      setSelectedCourses([...selectedCourses, courseId]);
+    }
+  }
 
   return (
     <>
       <TermSelector term={term} setTerm={setTerm} />
-      <CourseList courses={courses} term={term} />
+      <CourseList
+        courses={courses}
+        term={term}
+        selectedCourses={selectedCourses}
+        toggleCourse={toggleCourse}
+      />
     </>
   );
 }
