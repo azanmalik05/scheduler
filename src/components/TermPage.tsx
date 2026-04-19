@@ -1,6 +1,7 @@
 import { useState } from "react";
 import CourseList from "./CourseList";
 import TermSelector from "./TermSelector";
+import CoursePlanModal from "./CoursePlanModal";
 
 type Course = {
   term: string;
@@ -18,6 +19,7 @@ type TermPageProps = {
 function TermPage({ courses }: TermPageProps) {
   const [term, setTerm] = useState("Fall");
   const [selectedCourses, setSelectedCourses] = useState<string[]>([]);
+  const [showPlan, setShowPlan] = useState(false);
 
   function toggleCourse(courseId: string) {
     if (selectedCourses.includes(courseId)) {
@@ -29,12 +31,25 @@ function TermPage({ courses }: TermPageProps) {
 
   return (
     <>
-      <TermSelector term={term} setTerm={setTerm} />
+      <div className="top-bar">
+        <TermSelector term={term} setTerm={setTerm} />
+        <button className="plan-button" onClick={() => setShowPlan(true)}>
+          Course Plan
+        </button>
+      </div>
+
       <CourseList
         courses={courses}
         term={term}
         selectedCourses={selectedCourses}
         toggleCourse={toggleCourse}
+      />
+
+      <CoursePlanModal
+        isOpen={showPlan}
+        onClose={() => setShowPlan(false)}
+        courses={courses}
+        selectedCourses={selectedCourses}
       />
     </>
   );
