@@ -2,6 +2,7 @@ import { useState } from "react";
 import CourseList from "./CourseList";
 import TermSelector from "./TermSelector";
 import CoursePlanModal from "./CoursePlanModal";
+import { hasConflict } from "../utilities/conflicts";
 
 type Course = {
   term: string;
@@ -24,7 +25,7 @@ function TermPage({ courses }: TermPageProps) {
   function toggleCourse(courseId: string) {
     if (selectedCourses.includes(courseId)) {
       setSelectedCourses(selectedCourses.filter((id) => id !== courseId));
-    } else {
+    } else if (!hasConflict(courseId, courses, selectedCourses)) {
       setSelectedCourses([...selectedCourses, courseId]);
     }
   }
