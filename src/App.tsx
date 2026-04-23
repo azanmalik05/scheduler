@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
+import { Route, Routes } from "react-router-dom";
 import Banner from "./components/Banner";
 import TermPage from "./components/TermPage";
+import CourseEditor from "./components/CourseEditor";
 
 type Course = {
   term: string;
@@ -38,7 +40,10 @@ function App() {
   return (
     <div className="app">
       <Banner title={schedule.title} />
-      <TermPage courses={schedule.courses} />
+      <Routes>
+        <Route path="/" element={<TermPage courses={schedule.courses} />} />
+        <Route path="/courses/:id/edit" element={<CourseEditor courses={schedule.courses} />} />
+      </Routes>
     </div>
   );
 }
