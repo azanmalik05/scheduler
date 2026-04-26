@@ -6,9 +6,7 @@ const meetingPattern =
   /^$|^(M|Tu|W|Th|F|Sa|Su)+(?:\s)(?:[0-9]|1[0-9]|2[0-3]):[0-5][0-9]-(?:[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
 
 const Course = z.object({
-  term: z.enum(["Fall", "Winter", "Spring", "Summer"], {
-    errorMap: () => ({ message: "must be Fall, Winter, Spring, or Summer" }),
-  }),
+  term: z.enum(["Fall", "Winter", "Spring", "Summer"]),
   number: z
     .string()
     .regex(courseNumberPattern, "must be a number with optional section, e.g. 213-2"),

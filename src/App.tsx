@@ -5,7 +5,7 @@ import TermPage from "./components/TermPage";
 import CourseEditor from "./components/CourseEditor";
 
 type Course = {
-  term: string;
+  term: "Fall" | "Winter" | "Spring" | "Summer";
   number: string;
   meets: string;
   title: string;
