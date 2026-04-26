@@ -1,12 +1,6 @@
-import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
-
-type Course = {
-  term: string;
-  number: string;
-  meets: string;
-  title: string;
-};
+import { useForm } from "react-hook-form";
+import { courseResolver, type Course } from "../types/courses";
 
 type CourseEditorProps = {
   courses: {
@@ -18,11 +12,18 @@ function CourseEditor({ courses }: CourseEditorProps) {
   const { id } = useParams();
   const course = id ? courses[id] : null;
 
-  const [title, setTitle] = useState(course ? course.title : "");
-  const [meets, setMeets] = useState(course ? course.meets : "");
+  const { register, handleSubmit, formState: { errors } } = useForm<Course>({
+    defaultValues: course || {
+      term: "Fall",
+      number: "",
+      title: "",
+      meets: "",
+    },
+    mode: "onChange",
+    resolver: courseResolver,
+  });
 
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+  function onSubmit() {
   }
 
   if (!course) {
@@ -30,27 +31,31 @@ function CourseEditor({ courses }: CourseEditorProps) {
   }
 
   return (
-    <form className="course-form" onSubmit={handleSubmit}>
+    <form className="course-form" onSubmit={handleSubmit(onSubmit)}>
       <h2>Edit CS {course.number}</h2>
 
       <label className="form-field">
+        <span>Term</span>
+        <input type="text" {...register("term")} />
+        {errors.term && <p className="form-error">{errors.term.message}</p>}
+      </label>
+
+      <label className="form-field">
+        <span>Number</span>
+        <input type="text" {...register("number")} />
+        {errors.number && <p className="form-error">{errors.number.message}</p>}
+      </label>
+
+      <label className="form-field">
         <span>Title</span>
-        <input
-          type="text"
-          name="title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
+        <input type="text" {...register("title")} />
+        {errors.title && <p className="form-error">{errors.title.message}</p>}
       </label>
 
       <label className="form-field">
         <span>Meeting Times</span>
-        <input
-          type="text"
-          name="meets"
-          value={meets}
-          onChange={(e) => setMeets(e.target.value)}
-        />
+        <input type="text" {...register("meets")} />
+        {errors.meets && <p className="form-error">{errors.meets.message}</p>}
       </label>
 
       <div className="form-actions">
