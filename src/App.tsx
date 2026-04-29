@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import Banner from "./components/Banner";
 import TermPage from "./components/TermPage";
 import CourseEditor from "./components/CourseEditor";
+import { useDataQuery } from "./utilities/firebase";
 
 type Course = {
   term: "Fall" | "Winter" | "Spring" | "Summer";
@@ -19,23 +19,21 @@ type Schedule = {
 };
 
 function App() {
-  const [schedule, setSchedule] = useState<Schedule | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [json, loading, error] = useDataQuery("/");
 
-  useEffect(() => {
-    async function loadCourses() {
-      const response = await fetch("https://courses.cs.northwestern.edu/394/guides/data/cs-courses.php");
-      const json = await response.json();
-      setSchedule(json);
-      setLoading(false);
-    }
+  if (error) {
+    return <h1>Loading error</h1>;
+  }
 
-    loadCourses();
-  }, []);
-
-  if (loading || !schedule) {
+  if (loading) {
     return <h1>Loading...</h1>;
   }
+
+  if (!json) {
+    return <h1>No data found</h1>;
+  }
+
+  const schedule = json as Schedule;
 
   return (
     <div className="app">
