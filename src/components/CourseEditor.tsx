@@ -1,6 +1,7 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { courseResolver, type Course } from "../types/courses";
+import { updateData } from "../utilities/firebase";
 
 type CourseEditorProps = {
   courses: {
@@ -10,9 +11,10 @@ type CourseEditorProps = {
 
 function CourseEditor({ courses }: CourseEditorProps) {
   const { id } = useParams();
+  const navigate = useNavigate();
   const course = id ? courses[id] : null;
 
-  const { register, handleSubmit, formState: { errors } } = useForm<Course>({
+  const { register, handleSubmit, formState: { errors, isValid } } = useForm<Course>({
     defaultValues: course || {
       term: "Fall",
       number: "",
@@ -23,7 +25,20 @@ function CourseEditor({ courses }: CourseEditorProps) {
     resolver: courseResolver,
   });
 
-  function onSubmit() {
+  async function onSubmit(data: Course) {
+    if (!course || !id) return;
+    if (!isValid) return;
+
+    const unchanged =
+      data.term === course.term &&
+      data.number === course.number &&
+      data.title === course.title &&
+      data.meets === course.meets;
+
+    if (unchanged) return;
+
+    await updateData(`/courses/${id}`, data);
+    navigate("/");
   }
 
   if (!course) {
@@ -59,6 +74,9 @@ function CourseEditor({ courses }: CourseEditorProps) {
       </label>
 
       <div className="form-actions">
+        <button className="submit-button" type="submit">
+          Submit
+        </button>
         <Link className="cancel-button" to="/">
           Cancel
         </Link>

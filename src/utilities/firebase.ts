@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getDatabase, onValue, ref } from "firebase/database";
+import { getDatabase, onValue, ref, update } from "firebase/database";
 import { useEffect, useState } from "react";
 
 const firebaseConfig = {
@@ -21,6 +21,10 @@ export function useDataQuery(path: string): [unknown, boolean, Error | undefined
   const [error, setError] = useState<Error>();
 
   useEffect(() => {
+    setData(undefined);
+    setLoading(true);
+    setError(undefined);
+
     return onValue(
       ref(database, path),
       (snapshot) => {
@@ -35,4 +39,8 @@ export function useDataQuery(path: string): [unknown, boolean, Error | undefined
   }, [path]);
 
   return [data, loading, error];
+}
+
+export function updateData(path: string, value: object) {
+  return update(ref(database, path), value);
 }
