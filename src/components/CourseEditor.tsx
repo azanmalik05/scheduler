@@ -1,7 +1,7 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { courseResolver, type Course } from "../types/courses";
-import { updateData } from "../utilities/firebase";
+import { updateData, useAuthState } from "../utilities/firebase";
 
 type CourseEditorProps = {
   courses: {
@@ -12,6 +12,7 @@ type CourseEditorProps = {
 function CourseEditor({ courses }: CourseEditorProps) {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [user, authLoading] = useAuthState();
   const course = id ? courses[id] : null;
 
   const { register, handleSubmit, formState: { errors, isValid } } = useForm<Course>({
@@ -39,6 +40,14 @@ function CourseEditor({ courses }: CourseEditorProps) {
 
     await updateData(`/courses/${id}`, data);
     navigate("/");
+  }
+
+  if (authLoading) {
+    return <p>Checking sign in...</p>;
+  }
+
+  if (!user) {
+    return <p>You need to sign in before editing courses.</p>;
   }
 
   if (!course) {

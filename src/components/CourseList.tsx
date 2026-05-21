@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { hasConflict } from "../utilities/conflicts";
+import { useAuthState } from "../utilities/firebase";
 
 type Course = {
   term: string;
@@ -23,6 +24,8 @@ function CourseList({
   selectedCourses,
   toggleCourse,
 }: CourseListProps) {
+  const [user] = useAuthState();
+
   const filteredCourses = Object.entries(courses).filter(
     ([, course]) => course.term === term
   );
@@ -57,13 +60,15 @@ function CourseList({
             <p className="course-title">{course.title}</p>
             <p className="course-meets">{course.meets}</p>
 
-            <Link
-              className="edit-link"
-              to={`/courses/${id}/edit`}
-              onClick={(e) => e.stopPropagation()}
-            >
-              Edit
-            </Link>
+            {user && (
+              <Link
+                className="edit-link"
+                to={`/courses/${id}/edit`}
+                onClick={(e) => e.stopPropagation()}
+              >
+                Edit
+              </Link>
+            )}
           </li>
         );
       })}
